@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Framework — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Decision Framework</h1>
+      <p>Practice data-driven decision making and "disagree and commit" consensus, from Chapter 4.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active">
+        <h2><span class="sim-step-num">1</span> Define the Decision</h2>
+        <p>What decision needs to be made? Be specific.</p>
+        <textarea class="sim-textarea" id="decision" placeholder="Example: Should we enter the enterprise market or double down on consumer products?"></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">2</span> Data Inventory</h2>
+        <p>What data do you have to inform this decision? What data is missing?</p>
+        <textarea class="sim-textarea" id="data-have" placeholder="Data we have..."></textarea>
+        <textarea class="sim-textarea" id="data-need" placeholder="Data we need..." style="margin-top:0.5rem"></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">3</span> Decision Owner & Deadline</h2>
+        <p>Who owns this decision? When must it be made?</p>
+        <input type="text" class="sim-textarea" id="owner" placeholder="Decision owner..." style="min-height:auto;padding:0.5rem 1rem">
+        <input type="date" class="sim-textarea" id="deadline" style="min-height:auto;padding:0.5rem 1rem;margin-top:0.5rem">
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">4</span> Reversibility Check</h2>
+        <p>Is this decision easily reversible or a one-way door?</p>
+        <select class="sim-select" id="reversibility">
+          <option value="">Select...</option>
+          <option value="reversible">Easily Reversible — decide quickly, course-correct later</option>
+          <option value="partial">Partially Reversible — some consequences are lasting</option>
+          <option value="irreversible">Irreversible — one-way door, deliberate carefully</option>
+        </select>
+      </div>
+
+      <button class="sim-btn" id="decide-btn">Generate Decision Brief</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Decision Brief</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('decide-btn').addEventListener('click', function() {
+      var decision = document.getElementById('decision').value.trim() || 'Not specified';
+      var dataHave = document.getElementById('data-have').value.trim() || 'Not listed';
+      var dataNeed = document.getElementById('data-need').value.trim() || 'None identified';
+      var owner = document.getElementById('owner').value.trim() || 'Not assigned';
+      var deadline = document.getElementById('deadline').value || 'Not set';
+      var rev = document.getElementById('reversibility').value;
+      var revLabel = {reversible:'Easily Reversible',partial:'Partially Reversible',irreversible:'Irreversible'}[rev] || 'Not assessed';
+
+      var html = '<div style="display:flex;flex-direction:column;gap:1rem">';
+      html += '<div class="highlight-box"><strong>Decision:</strong> ' + decision + '</div>';
+      html += '<div class="definition-box"><strong>Data Available:</strong> ' + dataHave + '</div>';
+      html += '<div class="figure-box"><strong>Data Needed:</strong> ' + dataNeed + '</div>';
+      html += '<div class="highlight-box"><strong>Owner:</strong> ' + owner + ' | <strong>Deadline:</strong> ' + deadline + '</div>';
+      html += '<div class="highlight-box"><strong>Reversibility:</strong> ' + revLabel + '</div>';
+      html += '</div>';
+
+      var speed = rev === 'reversible' ? 'Decide quickly — this is a two-way door. Speed matters more than perfection.' :
+                  rev === 'partial' ? 'Moderate deliberation warranted. Gather key data but don\'t over-analyze.' :
+                  rev === 'irreversible' ? 'Take time to deliberate carefully. Ensure all perspectives are heard before committing.' :
+                  'Assess reversibility to determine appropriate decision speed.';
+
+      html += '<p style="margin-top:1.5rem;padding:1rem;background:#e8f0fe;border-radius:8px"><strong>Google\'s Advice:</strong> ' + speed + '</p>';
+
+      if (owner === 'Not assigned') html += '<p style="color:#EA4335;margin-top:0.5rem"><strong>Warning:</strong> Every decision needs a clear owner. Assign one before proceeding.</p>';
+      if (deadline === 'Not set') html += '<p style="color:#EA4335;margin-top:0.5rem"><strong>Warning:</strong> Decisions without deadlines don\'t get made. Set a deadline.</p>';
+
+      document.getElementById('result-content').innerHTML = html;
+      document.getElementById('result').style.display = '';
+    });
+  </script>
+</body>
+</html>

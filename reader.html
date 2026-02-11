@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Google Works - Reader</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/reader.css">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+    <h1 class="top-bar-title">How Google Works</h1>
+    <span id="page-counter" class="page-counter">Page 1 of 384</span>
+  </header>
+
+  <!-- Main Content -->
+  <main id="page-display" class="page-display">
+    <div id="image-view" class="image-view">
+      <img id="page-image" src="" alt="Page image">
+    </div>
+    <div id="text-view" class="text-view" style="display:none;">
+      <div id="text-content"></div>
+    </div>
+  </main>
+
+  <!-- Navigation -->
+  <nav class="page-nav">
+    <button id="btn-prev" class="nav-btn" aria-label="Previous page">&larr; Previous</button>
+    <div class="page-input-wrap">
+      <input
+        type="number"
+        id="page-input"
+        class="page-input"
+        min="1"
+        max="384"
+        value="1"
+        aria-label="Go to page number"
+      >
+    </div>
+    <button id="btn-next" class="nav-btn" aria-label="Next page">Next &rarr;</button>
+  </nav>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar-track">
+    <div id="progress-bar" class="progress-bar-fill"></div>
+  </div>
+
+  <!-- Zoom Panel (left edge, revealed on hover) -->
+  <aside id="zoom-panel" class="zoom-panel">
+    <button class="zoom-btn" data-zoom="70">70%</button>
+    <button class="zoom-btn" data-zoom="80">80%</button>
+    <button class="zoom-btn" data-zoom="90">90%</button>
+    <button class="zoom-btn active" data-zoom="100">100%</button>
+    <button class="zoom-btn" data-zoom="110">110%</button>
+    <button class="zoom-btn" data-zoom="120">120%</button>
+    <button class="zoom-btn" data-zoom="130">130%</button>
+    <button class="zoom-btn" data-zoom="140">140%</button>
+    <a id="open-new-tab" class="zoom-link" href="#" target="_blank" rel="noopener">Open in new tab</a>
+  </aside>
+
+  <!-- Context Menu FAB -->
+  <button id="context-fab" class="context-fab" aria-label="Open menu">&#9776;</button>
+
+  <!-- Context Menu Overlay -->
+  <div id="context-menu" class="context-overlay" style="display:none;">
+    <div class="context-card">
+      <div class="context-nav">
+        <button id="ctx-prev" class="ctx-nav-btn">&larr; Prev</button>
+        <span id="ctx-page-label" class="ctx-page-label">Page 1</span>
+        <button id="ctx-next" class="ctx-nav-btn">Next &rarr;</button>
+      </div>
+      <button id="ctx-toggle-view" class="ctx-btn">Switch to Text View</button>
+      <div class="ctx-search-wrap">
+        <input
+          type="text"
+          id="search-input"
+          class="ctx-search-input"
+          placeholder="Search pages..."
+          autocomplete="off"
+        >
+        <ul id="search-results" class="search-results"></ul>
+      </div>
+      <a href="index.html#simulators" class="ctx-link">Open Simulators</a>
+      <button id="ctx-close" class="ctx-btn ctx-btn-close">Close</button>
+    </div>
+  </div>
+
+  <script src="js/pages-data.js"></script>
+  <script src="js/reader.js"></script>
+</body>
+</html>

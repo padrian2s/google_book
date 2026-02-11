@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hiring Pipeline — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Hiring Pipeline</h1>
+      <p>Design a peer-based hiring process for smart creatives, based on Google's approach from Chapter 3.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active">
+        <h2><span class="sim-step-num">1</span> Define Your "Smart Creative"</h2>
+        <p>What does a smart creative look like in your organization? What combination of skills, mindset, and character do you need?</p>
+        <textarea class="sim-textarea" id="profile" placeholder="Example: Technical depth in machine learning, product sense, collaborative mindset, passion for learning..."></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">2</span> Hiring Committee Design</h2>
+        <p>Who should be on your hiring committee? Select the roles that should have input.</p>
+        <div class="sim-grid" id="committee-grid">
+          <div class="sim-grid-item" data-role="peer"><h4>Peer</h4><p>Same-level colleague</p></div>
+          <div class="sim-grid-item" data-role="manager"><h4>Hiring Manager</h4><p>Direct supervisor</p></div>
+          <div class="sim-grid-item" data-role="cross"><h4>Cross-functional</h4><p>Different department</p></div>
+          <div class="sim-grid-item" data-role="senior"><h4>Senior Leader</h4><p>Skip-level reviewer</p></div>
+          <div class="sim-grid-item" data-role="hr"><h4>HR Partner</h4><p>Process guardian</p></div>
+          <div class="sim-grid-item" data-role="culture"><h4>Culture Champion</h4><p>Values alignment</p></div>
+        </div>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">3</span> Interview Questions</h2>
+        <p>Design questions that assess learning ability and passion, not just technical skills.</p>
+        <textarea class="sim-textarea" id="questions" placeholder="Example: Tell me about the last thing you learned that changed how you think about your work..."></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">4</span> Your "Googleyness"</h2>
+        <p>Define your equivalent of "Googleyness" — the cultural qualities you look for beyond skills.</p>
+        <textarea class="sim-textarea" id="googleyness" placeholder="Example: Intellectual humility, comfort with ambiguity, bias for action, collaborative spirit..."></textarea>
+      </div>
+
+      <button class="sim-btn" id="pipeline-btn">Generate Hiring Pipeline</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Your Hiring Pipeline</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var selected = {};
+      document.querySelectorAll('#committee-grid .sim-grid-item').forEach(function(item) {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', function() {
+          var role = item.dataset.role;
+          selected[role] = !selected[role];
+          item.style.borderColor = selected[role] ? '#4285F4' : '';
+          item.style.background = selected[role] ? '#e8f0fe' : '';
+        });
+      });
+
+      document.getElementById('pipeline-btn').addEventListener('click', function() {
+        var profile = document.getElementById('profile').value.trim() || 'Not defined';
+        var questions = document.getElementById('questions').value.trim() || 'Not defined';
+        var googleyness = document.getElementById('googleyness').value.trim() || 'Not defined';
+        var roles = Object.keys(selected).filter(function(k) { return selected[k]; });
+
+        var html = '<div style="display:flex;flex-direction:column;gap:1rem">';
+        html += '<div class="highlight-box"><strong>Smart Creative Profile:</strong> ' + profile + '</div>';
+        html += '<div class="highlight-box"><strong>Committee:</strong> ' + (roles.length ? roles.join(', ') : 'No roles selected') + ' (' + roles.length + ' members)</div>';
+        html += '<div class="highlight-box"><strong>Key Interview Questions:</strong> ' + questions + '</div>';
+        html += '<div class="highlight-box"><strong>Cultural Qualities:</strong> ' + googleyness + '</div>';
+        html += '</div>';
+
+        var score = 0;
+        if (profile !== 'Not defined') score += 25;
+        if (roles.length >= 3) score += 25; else if (roles.length >= 1) score += 10;
+        if (questions !== 'Not defined') score += 25;
+        if (googleyness !== 'Not defined') score += 25;
+
+        html += '<div style="margin-top:1.5rem"><div class="sim-meter-label"><span>Pipeline Readiness</span><span>' + score + '%</span></div>';
+        html += '<div class="sim-meter-track"><div class="sim-meter-fill" style="width:' + score + '%"></div></div></div>';
+
+        if (roles.length < 3) {
+          html += '<p style="margin-top:1rem;color:#EA4335"><strong>Tip:</strong> Google recommends at least 3 committee members to reduce individual bias. Consider adding more roles.</p>';
+        }
+
+        document.getElementById('result-content').innerHTML = html;
+        document.getElementById('result').style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>

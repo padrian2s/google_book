@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strategy Builder — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Strategy Builder</h1>
+      <p>Build a strategy grounded in technical insights and platform thinking, following Google's approach from Chapter 2.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active">
+        <h2><span class="sim-step-num">1</span> Technical Insight</h2>
+        <p>What is the core technical insight behind your product or service? A technical insight is a novel application of technology that significantly reduces cost or increases functionality.</p>
+        <textarea class="sim-textarea" id="insight" placeholder="Example: PageRank — ranking web pages by the quality and quantity of links pointing to them, treating the web as a graph of human judgment..."></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">2</span> Platform Potential</h2>
+        <p>Could your product become a platform? How could you open it up to create an ecosystem?</p>
+        <textarea class="sim-textarea" id="platform" placeholder="Example: Open APIs that let third-party developers build on our technology, creating network effects..."></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">3</span> Open vs. Closed</h2>
+        <p>Should your strategy default to open or closed? Consider the trade-offs.</p>
+        <select class="sim-select" id="openness">
+          <option value="">Select approach...</option>
+          <option value="open">Default to Open — maximize ecosystem growth</option>
+          <option value="closed">Closed — control quality and experience</option>
+          <option value="hybrid">Hybrid — open core with closed premium layer</option>
+        </select>
+        <textarea class="sim-textarea" id="openness-reason" placeholder="Why this approach? What are the trade-offs?" style="margin-top:0.5rem"></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">4</span> Combinatorial Innovation</h2>
+        <p>What existing technologies or components could you combine in new ways?</p>
+        <textarea class="sim-textarea" id="combo" placeholder="List the components and how they could be combined..."></textarea>
+      </div>
+
+      <button class="sim-btn" id="build-btn">Build Strategy Summary</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Your Strategy Blueprint</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('build-btn').addEventListener('click', function() {
+      var insight = document.getElementById('insight').value.trim() || 'Not specified';
+      var platform = document.getElementById('platform').value.trim() || 'Not specified';
+      var openness = document.getElementById('openness').value || 'Not specified';
+      var reason = document.getElementById('openness-reason').value.trim() || '';
+      var combo = document.getElementById('combo').value.trim() || 'Not specified';
+
+      var opennessLabel = {open:'Default to Open',closed:'Closed System',hybrid:'Hybrid Approach'}[openness] || openness;
+
+      var html = '<div style="display:flex;flex-direction:column;gap:1rem">';
+      html += '<div class="highlight-box"><strong>Technical Insight:</strong> ' + insight + '</div>';
+      html += '<div class="highlight-box"><strong>Platform Strategy:</strong> ' + platform + '</div>';
+      html += '<div class="highlight-box"><strong>Openness:</strong> ' + opennessLabel + (reason ? ' — ' + reason : '') + '</div>';
+      html += '<div class="highlight-box"><strong>Combinatorial Innovation:</strong> ' + combo + '</div>';
+      html += '</div>';
+
+      var strength = 0;
+      if (insight !== 'Not specified') strength++;
+      if (platform !== 'Not specified') strength++;
+      if (openness !== 'Not specified') strength++;
+      if (combo !== 'Not specified') strength++;
+      var pct = strength * 25;
+      var label = strength === 4 ? 'Complete' : strength >= 2 ? 'Developing' : 'Needs Work';
+      html += '<div style="margin-top:1.5rem"><div class="sim-meter-label"><span>Strategy Completeness</span><span>' + pct + '% — ' + label + '</span></div>';
+      html += '<div class="sim-meter-track"><div class="sim-meter-fill" style="width:' + pct + '%"></div></div></div>';
+
+      document.getElementById('result-content').innerHTML = html;
+      document.getElementById('result').style.display = '';
+    });
+  </script>
+</body>
+</html>

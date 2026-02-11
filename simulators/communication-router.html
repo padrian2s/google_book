@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communication Router — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Communication Router</h1>
+      <p>Map your information flows and practice being a "damn good router," from Chapter 5.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active">
+        <h2><span class="sim-step-num">1</span> Information Audit</h2>
+        <p>List the key types of information that flow through your organization. What's shared well? What gets stuck?</p>
+        <textarea class="sim-textarea" id="flows-good" placeholder="Information that flows well (e.g., product updates, customer feedback)..."></textarea>
+        <textarea class="sim-textarea" id="flows-stuck" placeholder="Information that gets stuck (e.g., strategic decisions, cross-team dependencies)..." style="margin-top:0.5rem"></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">2</span> Openness Score</h2>
+        <p>Rate your organization's default on information sharing.</p>
+        <div class="sim-meter-label"><span>Need-to-know only</span><span>Default to open</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" id="openness-score">
+        <div class="sim-meter-track"><div class="sim-meter-fill" id="openness-fill" style="width:50%"></div></div>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">3</span> Routing Habits</h2>
+        <p>When you learn something new, how many people do you typically share it with?</p>
+        <select class="sim-select" id="routing">
+          <option value="">Select...</option>
+          <option value="0">I mostly keep it to myself</option>
+          <option value="1">I share with my direct team</option>
+          <option value="2">I share with anyone who might benefit</option>
+          <option value="3">I actively route it to specific people who need it</option>
+        </select>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">4</span> OKR Visibility</h2>
+        <p>Are your team's OKRs visible to the rest of the organization?</p>
+        <select class="sim-select" id="okr">
+          <option value="">Select...</option>
+          <option value="none">We don't use OKRs</option>
+          <option value="private">OKRs are private to our team</option>
+          <option value="shared">OKRs are shared with some teams</option>
+          <option value="public">OKRs are visible to everyone</option>
+        </select>
+      </div>
+
+      <button class="sim-btn" id="route-btn">Analyze Communication</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Communication Analysis</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var range = document.getElementById('openness-score');
+      var fill = document.getElementById('openness-fill');
+      range.addEventListener('input', function() { fill.style.width = (range.value * 10) + '%'; });
+
+      document.getElementById('route-btn').addEventListener('click', function() {
+        var good = document.getElementById('flows-good').value.trim() || 'Not identified';
+        var stuck = document.getElementById('flows-stuck').value.trim() || 'Not identified';
+        var openScore = parseInt(range.value);
+        var routing = document.getElementById('routing').value;
+        var okr = document.getElementById('okr').value;
+
+        var routeLabel = {0:'Information Hoarder',1:'Team Sharer',2:'Broad Sharer',3:'Active Router'}[routing] || 'Unknown';
+        var okrLabel = {none:'No OKRs',private:'Private OKRs',shared:'Partially Shared',public:'Fully Visible'}[okr] || 'Unknown';
+
+        var html = '<div class="sim-tags">';
+        html += '<span class="sim-tag ' + (openScore >= 7 ? 'sim-tag--green' : openScore >= 4 ? 'sim-tag--yellow' : 'sim-tag--red') + '">Openness: ' + openScore + '/10</span>';
+        html += '<span class="sim-tag ' + (routing >= 2 ? 'sim-tag--green' : routing >= 1 ? 'sim-tag--yellow' : 'sim-tag--red') + '">' + routeLabel + '</span>';
+        html += '<span class="sim-tag ' + (okr === 'public' ? 'sim-tag--green' : okr === 'shared' ? 'sim-tag--blue' : 'sim-tag--yellow') + '">' + okrLabel + '</span>';
+        html += '</div>';
+
+        html += '<div style="margin-top:1.5rem">';
+        html += '<div class="definition-box"><strong>Flowing Well:</strong> ' + good + '</div>';
+        html += '<div class="figure-box" style="margin-top:0.5rem"><strong>Getting Stuck:</strong> ' + stuck + '</div>';
+        html += '</div>';
+
+        var tips = [];
+        if (openScore < 6) tips.push('Increase default transparency — share meeting notes, decisions, and context more broadly.');
+        if (routing < 2) tips.push('Practice active routing: after every meeting, ask "who else needs to know this?" and send a quick summary.');
+        if (okr !== 'public') tips.push('Make OKRs visible to the entire organization to create alignment without requiring top-down control.');
+        if (stuck !== 'Not identified') tips.push('Focus on unblocking stuck information flows — these bottlenecks are likely causing hidden costs.');
+
+        if (tips.length) {
+          html += '<div style="margin-top:1.5rem"><strong>Recommendations:</strong><ul style="margin-top:0.5rem;padding-left:1.5rem">';
+          tips.forEach(function(t) { html += '<li style="margin-bottom:0.5rem">' + t + '</li>'; });
+          html += '</ul></div>';
+        }
+
+        document.getElementById('result-content').innerHTML = html;
+        document.getElementById('result').style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>

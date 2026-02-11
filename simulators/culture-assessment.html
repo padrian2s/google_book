@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Culture Assessment — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Culture Assessment</h1>
+      <p>Evaluate your organization's culture against Google's key cultural principles from Chapter 1.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active" id="step-1">
+        <h2><span class="sim-step-num">1</span> Smart Creatives</h2>
+        <p>How well does your organization attract and empower smart creatives — people who combine technical knowledge, business savvy, and creative energy?</p>
+        <div class="sim-meter-label"><span>Not at all</span><span>Fully empowered</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" data-dimension="smartCreatives">
+        <div class="sim-meter-track"><div class="sim-meter-fill" style="width:50%"></div></div>
+      </div>
+
+      <div class="sim-step" id="step-2">
+        <h2><span class="sim-step-num">2</span> Anti-HiPPO</h2>
+        <p>Do the best ideas win regardless of who proposes them, or does the highest-paid person's opinion dominate?</p>
+        <div class="sim-meter-label"><span>HiPPO rules</span><span>Best idea wins</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" data-dimension="antiHippo">
+        <div class="sim-meter-track"><div class="sim-meter-fill" style="width:50%"></div></div>
+      </div>
+
+      <div class="sim-step" id="step-3">
+        <h2><span class="sim-step-num">3</span> Collaboration Spaces</h2>
+        <p>Does your physical (or virtual) workspace encourage spontaneous interaction and cross-team collaboration?</p>
+        <div class="sim-meter-label"><span>Siloed</span><span>Highly collaborative</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" data-dimension="collaboration">
+        <div class="sim-meter-track"><div class="sim-meter-fill" style="width:50%"></div></div>
+      </div>
+
+      <div class="sim-step" id="step-4">
+        <h2><span class="sim-step-num">4</span> Values in Action</h2>
+        <p>Are your organization's stated values lived daily, or are they just posters on the wall?</p>
+        <div class="sim-meter-label"><span>Just slogans</span><span>Lived daily</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" data-dimension="values">
+        <div class="sim-meter-track"><div class="sim-meter-fill" style="width:50%"></div></div>
+      </div>
+
+      <div class="sim-step" id="step-5">
+        <h2><span class="sim-step-num">5</span> Knave Management</h2>
+        <p>How effectively does your organization identify and manage toxic behavior that undermines culture?</p>
+        <div class="sim-meter-label"><span>Tolerated</span><span>Quickly addressed</span></div>
+        <input type="range" min="1" max="10" value="5" class="sim-range" data-dimension="knaves">
+        <div class="sim-meter-track"><div class="sim-meter-fill" style="width:50%"></div></div>
+      </div>
+
+      <button class="sim-btn" id="assess-btn">Generate Assessment</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Your Culture Assessment</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var ranges = document.querySelectorAll('.sim-range');
+      ranges.forEach(function(range) {
+        var fill = range.parentElement.querySelector('.sim-meter-fill');
+        range.addEventListener('input', function() {
+          fill.style.width = (range.value * 10) + '%';
+        });
+      });
+
+      document.getElementById('assess-btn').addEventListener('click', function() {
+        var scores = {};
+        var total = 0;
+        ranges.forEach(function(r) {
+          scores[r.dataset.dimension] = parseInt(r.value);
+          total += parseInt(r.value);
+        });
+        var avg = (total / 5).toFixed(1);
+        var level = avg >= 8 ? 'Google-level' : avg >= 6 ? 'Strong' : avg >= 4 ? 'Developing' : 'Needs Work';
+        var color = avg >= 8 ? '#34A853' : avg >= 6 ? '#4285F4' : avg >= 4 ? '#FBBC05' : '#EA4335';
+
+        var html = '<div class="sim-meter-label"><span>Overall Score</span><span>' + avg + '/10 — ' + level + '</span></div>';
+        html += '<div class="sim-meter-track"><div class="sim-meter-fill" style="width:' + (avg * 10) + '%;background:' + color + '"></div></div>';
+        html += '<div class="sim-tags" style="margin-top:1.5rem">';
+
+        var labels = {smartCreatives:'Smart Creatives',antiHippo:'Anti-HiPPO',collaboration:'Collaboration',values:'Values in Action',knaves:'Knave Management'};
+        for (var k in scores) {
+          var tagClass = scores[k] >= 7 ? 'sim-tag--green' : scores[k] >= 5 ? 'sim-tag--blue' : scores[k] >= 3 ? 'sim-tag--yellow' : 'sim-tag--red';
+          html += '<span class="sim-tag ' + tagClass + '">' + labels[k] + ': ' + scores[k] + '/10</span>';
+        }
+        html += '</div>';
+
+        var weakest = Object.keys(scores).reduce(function(a,b){ return scores[a] < scores[b] ? a : b; });
+        html += '<p style="margin-top:1.5rem"><strong>Priority Focus:</strong> ' + labels[weakest] + ' (scored ' + scores[weakest] + '/10). This is your biggest opportunity for cultural improvement.</p>';
+
+        document.getElementById('result-content').innerHTML = html;
+        document.getElementById('result').style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>

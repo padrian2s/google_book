@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innovation Lab — How Google Works</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/simulators.css">
+</head>
+<body>
+  <div class="sim-layout">
+    <a href="../index.html" class="sim-back">&larr; Back to Home</a>
+    <div class="sim-header">
+      <h1>Innovation Lab</h1>
+      <p>Create the "primordial ooze" for innovation in your organization, based on Chapter 6's principles.</p>
+    </div>
+
+    <div class="sim-steps">
+      <div class="sim-step active">
+        <h2><span class="sim-step-num">1</span> Resource Allocation (70/20/10)</h2>
+        <p>How do you currently allocate resources? Adjust the sliders to match your current and ideal allocation.</p>
+        <div style="margin-bottom:1rem">
+          <label><strong>Core Business:</strong> <span id="core-val">70</span>%</label>
+          <input type="range" min="0" max="100" value="70" class="sim-range" id="core">
+        </div>
+        <div style="margin-bottom:1rem">
+          <label><strong>Adjacent Innovation:</strong> <span id="adjacent-val">20</span>%</label>
+          <input type="range" min="0" max="100" value="20" class="sim-range" id="adjacent">
+        </div>
+        <div>
+          <label><strong>Transformational Moonshots:</strong> <span id="moon-val">10</span>%</label>
+          <input type="range" min="0" max="100" value="10" class="sim-range" id="moon">
+        </div>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">2</span> 10x Thinking</h2>
+        <p>Pick your most important product or process. How would you make it 10 times better (not 10% better)?</p>
+        <textarea class="sim-textarea" id="tenx" placeholder="Example: Instead of improving search results by 10%, what if we could answer questions directly before the user finishes typing?"></textarea>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">3</span> Failure Tolerance</h2>
+        <p>How does your organization handle failure?</p>
+        <select class="sim-select" id="failure">
+          <option value="">Select...</option>
+          <option value="punish">Failure is punished — people avoid risk</option>
+          <option value="tolerate">Failure is tolerated but not celebrated</option>
+          <option value="learn">Failure is analyzed for learning</option>
+          <option value="celebrate">Failure is celebrated when it generates learning</option>
+        </select>
+      </div>
+
+      <div class="sim-step">
+        <h2><span class="sim-step-num">4</span> Innovation Blockers</h2>
+        <p>What are the biggest barriers to innovation in your organization?</p>
+        <textarea class="sim-textarea" id="blockers" placeholder="Example: Risk aversion, lack of time for exploration, no budget for experiments..."></textarea>
+      </div>
+
+      <button class="sim-btn" id="lab-btn">Generate Innovation Report</button>
+
+      <div class="sim-result" id="result" style="display:none;">
+        <h3>Innovation Lab Report</h3>
+        <div id="result-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      ['core','adjacent','moon'].forEach(function(id) {
+        var slider = document.getElementById(id);
+        var label = document.getElementById(id + '-val');
+        slider.addEventListener('input', function() { label.textContent = slider.value; });
+      });
+
+      document.getElementById('lab-btn').addEventListener('click', function() {
+        var core = parseInt(document.getElementById('core').value);
+        var adj = parseInt(document.getElementById('adjacent').value);
+        var moon = parseInt(document.getElementById('moon').value);
+        var total = core + adj + moon;
+        var tenx = document.getElementById('tenx').value.trim() || 'Not defined';
+        var failure = document.getElementById('failure').value;
+        var blockers = document.getElementById('blockers').value.trim() || 'Not identified';
+
+        var failLabel = {punish:'Risk Averse',tolerate:'Tolerant',learn:'Learning-Oriented',celebrate:'Innovation Culture'}[failure] || 'Not assessed';
+        var failColor = {punish:'sim-tag--red',tolerate:'sim-tag--yellow',learn:'sim-tag--blue',celebrate:'sim-tag--green'}[failure] || '';
+
+        var html = '<h4 style="margin-bottom:1rem">Resource Allocation</h4>';
+        html += '<div class="sim-meter-label"><span>Core (' + core + '%)</span><span>Adjacent (' + adj + '%)</span><span>Moonshots (' + moon + '%)</span></div>';
+        html += '<div style="display:flex;height:24px;border-radius:12px;overflow:hidden;margin-bottom:0.5rem">';
+        html += '<div style="width:' + (core/total*100) + '%;background:#4285F4"></div>';
+        html += '<div style="width:' + (adj/total*100) + '%;background:#FBBC05"></div>';
+        html += '<div style="width:' + (moon/total*100) + '%;background:#EA4335"></div>';
+        html += '</div>';
+
+        if (total !== 100) {
+          html += '<p style="color:#EA4335;font-size:0.875rem">Note: Your allocations total ' + total + '%. Google recommends targeting 100% across all three categories.</p>';
+        }
+
+        var ideal = Math.abs(core - 70) < 15 && Math.abs(adj - 20) < 10 && Math.abs(moon - 10) < 10;
+        html += '<p style="margin:1rem 0">' + (ideal ? 'Your allocation is close to Google\'s 70/20/10 benchmark.' : 'Consider adjusting toward the 70/20/10 benchmark: 70% core, 20% adjacent, 10% moonshots.') + '</p>';
+
+        html += '<div class="sim-tags" style="margin:1rem 0">';
+        html += '<span class="sim-tag ' + failColor + '">Failure Culture: ' + failLabel + '</span>';
+        html += '</div>';
+
+        html += '<div class="highlight-box" style="margin:1rem 0"><strong>10x Vision:</strong> ' + tenx + '</div>';
+        html += '<div class="figure-box"><strong>Innovation Blockers:</strong> ' + blockers + '</div>';
+
+        var score = 0;
+        if (ideal) score += 30;
+        if (tenx !== 'Not defined') score += 25;
+        if (failure === 'learn' || failure === 'celebrate') score += 25;
+        if (blockers !== 'Not identified') score += 20;
+
+        html += '<div style="margin-top:1.5rem"><div class="sim-meter-label"><span>Innovation Readiness</span><span>' + score + '%</span></div>';
+        html += '<div class="sim-meter-track"><div class="sim-meter-fill" style="width:' + score + '%"></div></div></div>';
+
+        document.getElementById('result-content').innerHTML = html;
+        document.getElementById('result').style.display = '';
+      });
+    })();
+  </script>
+</body>
+</html>
